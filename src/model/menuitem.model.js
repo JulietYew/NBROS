@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
+const Admin = require('./admin.model')
 
 const menuItemSchema = new Schema({
     foodname: {
@@ -11,6 +12,12 @@ const menuItemSchema = new Schema({
         carbohydrates: Number,
         proteins: Number,
         fats: Number,
+        required: true,
+      },
+      admin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Admin,
+        required: true
       },
 }, {timestamps: true}
 )
