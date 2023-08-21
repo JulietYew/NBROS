@@ -2,34 +2,34 @@ const customers = require("../model/customer.model");
 const mongoose = require('mongoose')
 
 class customerService {
-    async createUser(data) {
-        //to create a user
+    async createCustomer(data) {
+        //to create a customer
         await customers.create(data);
         return await users.find(data, { _id: 1, password: 0 })
     }
 
-    async getAUserById(id) {
-        //get a single user by id
+    async getACustomerById(id) {
+        //get a single customer by id
         return await customers.findById(id, { _id: 1, password: 0 });
     }
 
-    async getAllUsers() {
-        //get all users
+    async getAllCustomers() {
+        //get all customers
         return await customers.find({}, { _id: 1, password: 0 })
     }
 
-    async deleteUser(id) {
-        // delete a user
+    async deleteCustomer(id) {
+        // delete a customer
         return await customers.findByIdAndDelete(id)
     }
 
-    async getAUserByEmail(data) {
-        //get a single user by id
+    async getACustomerByEmail(data) {
+        //get a single customer by id
         return await customers.findOne(data);
     }
 
-    async updateUser(id, data) {
-        // update a user
+    async updateCustomer(id, data) {
+        // update a customer
         await customers.findByIdAndUpdate(id, data)
         return await customers.find(data, { _id: 1, password: 0 })
 

@@ -1,9 +1,9 @@
 const Admin = require('../model/admin.model');
+const mongoose = require('mongoose')
 
 class adminService {
-
+    // create an admin
     async createAdmin(newAdmin) {
-        // create an admin
         await Admin.create(newAdmin)
         return await Admin.find(newAdmin, { _id: 1, password: 0 })
     }
@@ -13,9 +13,9 @@ class adminService {
         return await Admin.find(filter, { _id: 1, password: 0 })
     }
 
-    // get a single admin
-    async getAdmin(filter) {
-        return await Admin.findOne(filter);
+    // get a single admin  by id
+    async getAdminById(id) {
+        return await Admin.findById(id, { _id: 1, password: 0 });
     }
 
     // edit an admin by id
