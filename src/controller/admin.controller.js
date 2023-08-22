@@ -53,7 +53,7 @@ class AdminController{
             })
         }
     }
-    async Login(req, res, next) { 
+    async login(req, res, next) { 
         try {
             let { email, password } = req.body
             let id = req.params.id
