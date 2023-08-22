@@ -2,6 +2,10 @@ const { MESSAGES } = require('../config/constants.config')
 const customerServices = require('../services/customer.services')
 const mongoose = require('mongoose')
 const checkValidId = require('../utils/validateID')
+const {verifyPassword} = require('../lib/bcrypt')
+const {hashPassword} = require('../lib/bcrypt')
+const {generateToken} = require('../lib/generateToken') 
+const {verifyToken} = require('../lib/generateToken') 
 
 const {
     createCustomer,
@@ -17,11 +21,14 @@ class CustomerController {
         try {
             const { password, email } = req.body;
             const data = req.body
-            const findCustomerEmail = await getACustomerByEmail({ email: email });
+            console.log(data)
+            const findCustomerEmail = await getACustomerByEmail({ email: data.email });
+            console.log("customer email", findCustomerEmail)
             if (!email) {
                 return res.status(404).send({
                     message: 'Enter email address',
                     success: false
+                    
                 })
             }
             if (findCustomerEmail) {
@@ -36,11 +43,15 @@ class CustomerController {
                     message: MESSAGES.CUSTOMER.INCORRECT_DETAILS
                 });
             }
-            const user = await createCustomer(data);
+            const safePassword = await hashPassword(password, rounds)
+            console.log("here is the password", safePassword)
+            const user = await createCustomer(data, {password:safePassword} );
+            console.log("user",user)
             return user
                 ? res.status(201).send({
                     message: 'Customer created successfully',
                     success: true,
+
                 })
                 : res.status(400).send({
                     message: 'Customer not created',
@@ -55,30 +66,44 @@ class CustomerController {
             };
         }
     }
-    async Login(req, res, next) { 
+    async login(req, res, next) { 
         try {
             let { email, password } = req.body
             //const enteredPassword = req.body.password
-            let user = await getACustomerByEmail({ email: email })
-            if (!user) {
+            let customer = await getACustomerByEmail({ email: email })
+            if (!customer) {
                 return res.status(404).send({
                     message: MESSAGES.CUSTOMER.INCORRECT_DETAILS,
                     success: false
                 });
             }
-            if (!user || user === null){
+            if (!customer || customer === null){
                 return res.status(404).send({
                     message: "User does not exist, do you want to sign up",
                     success: false
                 });
             } 
-            // hash the password
-            // generate token
-            // bcrypt compare
+            // Checks if the password input by the client matches the protected password of the returned user
+            const isValid = await verifyPassword(password, customer.password)
+
+                     // Sends a message if the input password doesn't match
+             if(!isValid){
+                return res.status(400).send({
+                    message: MESSAGES.CUSTOMER.W_PASSWORD,
+                    status: 'failed' 
+                })
+             }
+            const useForToken = {
+            id: user._id,
+           }
+            // Generates a token for the user 
+            const token = generateToken(useForToken)
+
         }catch(err) {
             return res.status(500).send({
                 message: 'Internal Server Error' + err,
-                success: false
+                success: false,
+               
             });
 
         }

@@ -7,13 +7,12 @@ const menuItemSchema = new Schema({
         type: String,
         required: true,
       },
-      nutritionalInfo: {
-        calories: Number,
-        carbohydrates: Number,
-        proteins: Number,
-        fats: Number,
-        required: true,
-      },
+      
+        calories: {type: Number, required: true},
+        carbohydrates: {type: Number, required: true},
+        proteins:{type: Number, required: true},
+        fats: {type: Number, required: true},
+  
       admin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: Admin,
